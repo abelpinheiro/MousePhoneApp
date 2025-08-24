@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
+    var showDialog by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -42,17 +44,24 @@ fun HomeScreen() {
     ) {
         paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Status card
             Card(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A3A))
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
@@ -72,6 +81,89 @@ fun HomeScreen() {
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(64.dp))
+
+            // Connect to computer section
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(
+                    Icons.Default.PhoneAndroid,
+                    contentDescription = "Connect to Computer",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(64.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Connect to Computer",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Transform your phone into a wireless\nmouse and trackpad",
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(onClick = {},
+                    shape = RoundedCornerShape(50),
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(50.dp),
+                    contentPadding = PaddingValues(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFF6A5AE0), Color(0xFF946BEE))
+                                )
+                            ),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text("Connect Now", fontSize = 16.sp, color = Color.White)
+                    }
+                }
+            }
+            if (showError) {
+                ConnectionError()
+            }
+        }
+    }
+
+    if (showDialog){
+        // TODO Go to Connect Dialog screen
+    }
+}
+
+@Composable
+fun ConnectionError(){
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFD32F2F))
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ){
+            Text(
+                "Connection Error",
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 18.sp
+            )
+            Text(
+                "Invalid IP address or port",
+                color = Color.White,
+                fontSize = 14.sp
+            )
         }
     }
 }
