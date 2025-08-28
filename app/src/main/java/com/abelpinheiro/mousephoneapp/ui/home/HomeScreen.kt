@@ -1,5 +1,6 @@
 package com.abelpinheiro.mousephoneapp.ui.home
 
+import android.R.attr.port
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -153,9 +154,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
     if (uiState.showConnectionDialog) {
         ConnectDialog(
             onDismiss = { viewModel.onDialogDismiss() },
-            onConnect = { ip, port ->
-                viewModel.onAttemptConnection(ip, port)
-            }
+            viewModel = viewModel
         )
     }
 }

@@ -1,9 +1,11 @@
 package com.abelpinheiro.mousephoneapp.ui.home
 
+import android.R.attr.port
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -14,17 +16,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
+fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by remember { mutableStateOf(0) }
-    var ipAddress by remember { mutableStateOf("192.168.1.0") }
-    var port by remember { mutableStateOf("8080") }
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -84,14 +91,11 @@ fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
                 if(selectedTab == 0)
                 {
                     ManualEntryContent(
-                        ipAddress = ipAddress,
-                        port = port,
-                        onIpAddressChange = { ipAddress = it },
-                        onPortChange = { port = it },
+                        uiState = uiState,
+                        onIpAddressChange = { viewModel.onIpAddressChanged(it) },
+                        onPortChange = { viewModel.onPortChanged(it) },
                         onCancel = onDismiss,
-                        onConnect = {
-                            onConnect(ipAddress, port)
-                        }
+                        onConnect = { viewModel.onAttemptConnection() }
                     )
                 }
                 else{
@@ -104,8 +108,7 @@ fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
 
     @Composable
     fun ManualEntryContent(
-        ipAddress: String,
-        port: String,
+        uiState: HomeUIState,
         onIpAddressChange: (String) -> Unit,
         onPortChange: (String) -> Unit,
         onCancel: () -> Unit,
@@ -114,17 +117,58 @@ fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
         Column{
             Text("IP Address", color = Color.Gray)
             OutlinedTextField(
-                value = ipAddress,
+                value = uiState.ipAddress,
                 onValueChange = onIpAddressChange,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                visualTransformation = IpAddressVisualTransformation(),
+                isError = uiState.ipAddressError != null,
+                singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = Color.Gray,
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
+                    unfocusedTextColor = Color.White,
+                    errorBorderColor = MaterialTheme.colorScheme.error
                 )
             )
+            uiState.ipAddressError?.let{
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text("Port", color = Color.Gray)
+            OutlinedTextField(
+                value = uiState.port,
+                onValueChange = onPortChange,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = uiState.portError != null,
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    errorBorderColor = MaterialTheme.colorScheme.error
+                )
+            )
+            uiState.portError?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -138,6 +182,7 @@ fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = onConnect,
+                    enabled = uiState.isConnectButtonEnabled,
                     shape = RoundedCornerShape(50),
                     contentPadding = PaddingValues(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
@@ -206,3 +251,35 @@ fun ConnectDialog(onDismiss: () -> Unit, onConnect: (String, String) -> Unit) {
             }
         }
     }
+
+// VisualTransformation for IP formatting
+class IpAddressVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val trimmed = if (text.text.length >= 12) text.text.substring(0..11) else text.text
+        var out = ""
+        for (i in trimmed.indices) {
+            out += trimmed[i]
+            if (i % 3 == 2 && i < 11) out += "."
+        }
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                if (offset <= 2) return offset
+                if (offset <= 5) return offset + 1
+                if (offset <= 8) return offset + 2
+                if (offset <= 11) return offset + 3
+                return 15
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                if (offset <= 3) return offset
+                if (offset <= 7) return offset - 1
+                if (offset <= 11) return offset - 2
+                if (offset <= 15) return offset - 3
+                return 12
+            }
+        }
+
+        return TransformedText(AnnotatedString(out), offsetMapping)
+    }
+}
