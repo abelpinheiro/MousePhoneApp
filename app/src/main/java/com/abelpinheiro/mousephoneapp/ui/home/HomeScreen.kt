@@ -1,4 +1,4 @@
-package com.abelpinheiro.mousephoneapp
+package com.abelpinheiro.mousephoneapp.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,12 +17,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
-    var showDialog by remember { mutableStateOf(false) }
-    var showError by remember { mutableStateOf(false) }
+fun HomeScreen(viewModel: HomeViewModel) {
+    // Observe the UI state from the ViewModel
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (uiState.isConnected){
+        // TODO Launch TrackPadScreen
+        return
+    }
 
     Scaffold(
         topBar = {
@@ -82,7 +88,16 @@ fun HomeScreen() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Show connection error if it exists
+            uiState.connectionError?.let { error ->
+                ConnectionError(message = error) {
+                    viewModel.clearConnectionError()
+                }
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
 
             // Connect to computer section
             Column(
@@ -110,7 +125,7 @@ fun HomeScreen() {
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = {},
+                Button(onClick = { viewModel.onConnectClicked() },
                     shape = RoundedCornerShape(50),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -132,19 +147,25 @@ fun HomeScreen() {
                     }
                 }
             }
-            if (showError) {
-                ConnectionError()
-            }
         }
     }
 
-    if (showDialog){
-        // TODO Go to Connect Dialog screen
+    if (uiState.showConnectionDialog) {
+        ConnectDialog(
+            onDismiss = { viewModel.onDialogDismiss() },
+            onConnect = { ip, port ->
+                viewModel.onAttemptConnection(ip, port)
+            }
+        )
     }
 }
 
 @Composable
-fun ConnectionError(){
+fun ConnectionError(message: String, onDismiss: () -> Unit){
+    LaunchedEffect(key1 = message) {
+        kotlinx.coroutines.delay(3000) // Show error for 3 seconds
+        onDismiss()
+    }
     Card(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         shape = RoundedCornerShape(12.dp),

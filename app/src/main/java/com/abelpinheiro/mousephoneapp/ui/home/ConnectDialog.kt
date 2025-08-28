@@ -1,4 +1,4 @@
-package com.abelpinheiro.mousephoneapp
+package com.abelpinheiro.mousephoneapp.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
