@@ -15,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.abelpinheiro.mousephoneapp.data.ConnectionRepositoryImpl
-import com.abelpinheiro.mousephoneapp.data.ViewModelFactory
 import com.abelpinheiro.mousephoneapp.data.WebSocketDataSource
 import com.abelpinheiro.mousephoneapp.ui.home.HomeScreen
 import com.abelpinheiro.mousephoneapp.ui.home.HomeViewModel

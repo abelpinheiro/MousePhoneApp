@@ -38,4 +38,14 @@ class TrackpadViewModel(
         //TODO Send right click event
         println("Right Click")
     }
+
+    fun onDisconnectButtonClicked() {
+        connectionRepository.disconnect()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        connectionRepository.disconnect()
+        println("TrackpadViewModel cleared, connection closed.")
+    }
 }

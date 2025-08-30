@@ -1,6 +1,5 @@
 package com.abelpinheiro.mousephoneapp.ui.home
 
-import android.R.attr.port
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadScreen
 import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadViewModel
 
