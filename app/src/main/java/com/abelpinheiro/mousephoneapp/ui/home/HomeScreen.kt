@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.abelpinheiro.mousephoneapp.ui.components.ConnectionStatusCard
 import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadScreen
 import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadViewModel
 
@@ -28,7 +29,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewMode
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.isConnected){
-        TrackpadScreen(viewModel = trackpadViewModel)
+        TrackpadScreen(homeViewModel = homeViewModel, trackpadViewModel = trackpadViewModel)
         return
     }
 
@@ -59,36 +60,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewMode
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Status card
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A3A))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.WifiOff,
-                            contentDescription = "Disconnected",
-                            tint = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Disconnected", color = Color.Gray)
-                    }
-                    Icon(
-                        Icons.Default.PhoneAndroid,
-                        contentDescription = "Phone",
-                        tint = Color.Gray
-                    )
-                }
-            }
+            ConnectionStatusCard(uiState = uiState)
 
             Spacer(modifier = Modifier.height(16.dp))
 
