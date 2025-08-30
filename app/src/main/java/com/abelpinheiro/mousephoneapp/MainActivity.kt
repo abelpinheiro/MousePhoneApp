@@ -15,12 +15,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.abelpinheiro.mousephoneapp.data.ConnectionRepositoryImpl
+import com.abelpinheiro.mousephoneapp.data.ViewModelFactory
+import com.abelpinheiro.mousephoneapp.data.WebSocketDataSource
 import com.abelpinheiro.mousephoneapp.ui.home.HomeScreen
 import com.abelpinheiro.mousephoneapp.ui.home.HomeViewModel
 import com.abelpinheiro.mousephoneapp.ui.theme.MousePhoneAppTheme
+import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadViewModel
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: HomeViewModel by viewModels()
+    val webSocketDataSource = WebSocketDataSource()
+    val connectionRepository = ConnectionRepositoryImpl(webSocketDataSource)
+    val viewModelFactory = ViewModelFactory(connectionRepository)
+
+    val homeViewModel: HomeViewModel by viewModels { viewModelFactory }
+    val trackpadViewModel: TrackpadViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +41,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(viewModel = viewModel)
+                    HomeScreen(
+                        homeViewModel = homeViewModel,
+                        trackpadViewModel = trackpadViewModel
+                    )
                 }
             }
         }

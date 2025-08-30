@@ -1,11 +1,13 @@
 package com.abelpinheiro.mousephoneapp.ui.home
 
-import android.R.attr.port
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.abelpinheiro.mousephoneapp.data.ConnectionRepository
+import com.abelpinheiro.mousephoneapp.data.ConnectionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -18,14 +20,31 @@ data class HomeUIState(
     val port: String = "",
     val ipAddressError: String? = null,
     val portError: String? = null,
-    val isConnectButtonEnabled: Boolean = false
+    val isConnectButtonEnabled: Boolean = false,
+    val isLoading: Boolean = false
 )
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val connectionRepository: ConnectionRepository
+) : ViewModel() {
     // Private mutable state flow that can be updated only within the ViewModel
     private val _uiState = MutableStateFlow(HomeUIState())
     // Public read-only state flow that the UI can observe
     val uiState: StateFlow<HomeUIState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            connectionRepository.connectionState.collectLatest { state ->
+                when(state){
+                    is ConnectionState.Connected -> { _uiState.update { it.copy(isConnected = true, isLoading = false) } }
+                    is ConnectionState.Connecting -> { _uiState.update { it.copy(isLoading = true, connectionError = null) } }
+                    is ConnectionState.Error -> { _uiState.update { it.copy(isLoading = false, connectionError = state.message) } }
+                    is ConnectionState.Disconnected -> { _uiState.update { it.copy(isConnected = false, isLoading = false) } }
+                    else -> _uiState.update { it.copy(isLoading = false) }
+                }
+            }
+        }
+    }
 
     fun onConnectClicked() {
         _uiState.update { it.copy(showConnectionDialog = true, connectionError = null) }
@@ -61,12 +80,9 @@ class HomeViewModel : ViewModel() {
         // Hide dialog and show loading state if necessary
         _uiState.update { it.copy(showConnectionDialog = false) }
 
-        // --- TODO: Implement actual connection logic here ---
-        viewModelScope.launch {
-            // Simulate network call
-            kotlinx.coroutines.delay(1000)
-            _uiState.update { it.copy(isConnected = true) }
-        }
+        // Initiate connection
+        connectionRepository.connect(currentState.ipAddress, currentState.port)
+        _uiState.update { it.copy(showConnectionDialog = false) }
     }
 
     /*

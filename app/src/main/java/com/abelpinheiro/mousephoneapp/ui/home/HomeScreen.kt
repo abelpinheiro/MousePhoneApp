@@ -19,15 +19,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadScreen
+import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
-    // Observe the UI state from the ViewModel
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewModel) {
+    // Observe the UI state from HomeViewModel
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.isConnected){
-        // TODO Launch TrackPadScreen
+        TrackpadScreen(viewModel = trackpadViewModel)
         return
     }
 
@@ -94,7 +97,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
             // Show connection error if it exists
             uiState.connectionError?.let { error ->
                 ConnectionError(message = error) {
-                    viewModel.clearConnectionError()
+                    homeViewModel.clearConnectionError()
                 }
             }
 
@@ -126,7 +129,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(onClick = { viewModel.onConnectClicked() },
+                Button(onClick = { homeViewModel.onConnectClicked() },
                     shape = RoundedCornerShape(50),
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
@@ -153,8 +156,8 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
     if (uiState.showConnectionDialog) {
         ConnectDialog(
-            onDismiss = { viewModel.onDialogDismiss() },
-            viewModel = viewModel
+            onDismiss = { homeViewModel.onDialogDismiss() },
+            viewModel = homeViewModel
         )
     }
 }
