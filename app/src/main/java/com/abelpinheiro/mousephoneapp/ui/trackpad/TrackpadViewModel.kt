@@ -7,13 +7,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
 data class TrackpadUiState(
     val isGyroEnabled: Boolean = false
 )
 
 @HiltViewModel
-class TrackpadViewModel(
+class TrackpadViewModel @Inject constructor(
     private val connectionRepository: ConnectionRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(TrackpadUiState())

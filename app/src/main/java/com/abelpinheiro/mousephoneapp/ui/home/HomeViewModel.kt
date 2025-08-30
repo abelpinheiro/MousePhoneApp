@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 // Data class to hold the entire UI state for the home screen
 data class HomeUIState(
@@ -26,7 +27,7 @@ data class HomeUIState(
 )
 
 @HiltViewModel
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     private val connectionRepository: ConnectionRepository
 ) : ViewModel() {
     // Private mutable state flow that can be updated only within the ViewModel
