@@ -2,6 +2,7 @@ package com.abelpinheiro.mousephoneapp.data
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -10,9 +11,13 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindConnectionRepository(
-        connectionRepositoryImpl: ConnectionRepositoryImpl
-    ): ConnectionRepository
+    fun provideWebSocketDataSource(): WebSocketDataSource = WebSocketDataSource()
+
+    @Provides
+    @Singleton
+    fun provideConnectionRepository(
+        dataSource: WebSocketDataSource
+    ): ConnectionRepository = ConnectionRepositoryImpl(dataSource)
 }

@@ -25,9 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val webSocketDataSource = WebSocketDataSource()
-    val connectionRepository = ConnectionRepositoryImpl(webSocketDataSource)
-
     private val homeViewModel: HomeViewModel by viewModels()
     private val trackpadViewModel: TrackpadViewModel by viewModels()
 
