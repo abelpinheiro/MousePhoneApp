@@ -9,6 +9,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.CompassCalibration
+import androidx.compose.material.icons.filled.Mouse
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerType.Companion.Mouse
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -105,8 +108,9 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
             Spacer(modifier = Modifier.height(8.dp))
 
             TrackpadArea(
+                modifier = Modifier.fillMaxWidth().weight(1f),
                 onMouseMove = { deltaX, deltaY -> trackpadViewModel.onMouseMove(deltaX, deltaY) },
-                disabled = disabled || trackpadUiState .isGyroEnabled
+                disabled = trackpadUiState .isGyroEnabled
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -188,8 +192,47 @@ fun MouseButtons(onLeftClick: () -> Unit, onRightClick: () -> Unit, disabled: Bo
 }
 
 @Composable
-fun TrackpadArea(onMouseMove:  (deltaX: Float, deltaY: Float) -> Unit, disabled: Boolean) {
-    Text("Track pad - not implemented yet")
+fun TrackpadArea(modifier: Modifier, onMouseMove:  (deltaX: Float, deltaY: Float) -> Unit, disabled: Boolean) {
+    val trackpadColor = if (disabled) Color.DarkGray.copy(alpha = 0.6f) else Color(0xFF2A2A3A)
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(trackpadColor)
+            .pointerInput(disabled){
+                if(!disabled){
+                    // Detect drag gestures on the trackpad
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        onMouseMove(dragAmount.x, dragAmount.y)
+                    }
+                }
+            },
+        contentAlignment = Alignment.Center
+    ){
+        if (disabled){
+            Text("Trackpad disabled (Gyro is ON)", color = Color.White.copy(alpha = 0.7f))
+        } else {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Mouse,
+                    contentDescription = "Mouse Icon",
+                    tint = Color.Gray
+                )
+                Text(
+                    "Touch to move cursor",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "Drag to control mouse movement",
+                    color = Color.Gray
+                )
+            }
+        }
+    }
 }
 
 @Composable

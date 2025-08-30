@@ -26,8 +26,8 @@ class TrackpadViewModel @Inject constructor(
     }
 
     fun onMouseMove(deltaX: Float, deltaY: Float){
-        // TODO: Send mouse move data to the server
-        println("Mouse moved by: ($deltaX, $deltaY)")
+        val json = """{"type": "move", "dx": $deltaX, "dy": $deltaY}"""
+        connectionRepository.sendMessage(json)
     }
 
     fun onLeftClick(){
