@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -69,7 +69,6 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    implementation(libs.google.firebase.database.ktx)
     implementation(libs.okhttp)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
