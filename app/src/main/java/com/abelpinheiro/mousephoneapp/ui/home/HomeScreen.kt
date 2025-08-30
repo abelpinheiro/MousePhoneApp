@@ -183,7 +183,7 @@ fun ConnectionError(message: String, onDismiss: () -> Unit){
                 fontSize = 18.sp
             )
             Text(
-                "Invalid IP address or port",
+                message,
                 color = Color.White,
                 fontSize = 14.sp
             )
