@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abelpinheiro.mousephoneapp.data.ConnectionRepository
 import com.abelpinheiro.mousephoneapp.data.ConnectionState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ data class HomeUIState(
     val isLoading: Boolean = false
 )
 
+@HiltViewModel
 class HomeViewModel(
     private val connectionRepository: ConnectionRepository
 ) : ViewModel() {
@@ -93,9 +95,12 @@ class HomeViewModel(
         val port = _uiState.value.port
 
         // IP Validation
+        // Regex to validate IPV4
+        val ipRegex = Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+
         val ipError = if (ip.isBlank()) {
             "IP address cannot be empty"
-        } else if (ip.split(".").any { it.toIntOrNull()?.let { num -> num > 255 } == true }) {
+        } else if (!ip.matches(ipRegex)) {
             "Invalid IP address segment"
         } else {
             null

@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.abelpinheiro.mousephoneapp.data.ConnectionRepositoryImpl
 import com.abelpinheiro.mousephoneapp.data.ViewModelFactory
 import com.abelpinheiro.mousephoneapp.data.WebSocketDataSource
@@ -23,14 +24,15 @@ import com.abelpinheiro.mousephoneapp.ui.home.HomeScreen
 import com.abelpinheiro.mousephoneapp.ui.home.HomeViewModel
 import com.abelpinheiro.mousephoneapp.ui.theme.MousePhoneAppTheme
 import com.abelpinheiro.mousephoneapp.ui.trackpad.TrackpadViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val webSocketDataSource = WebSocketDataSource()
     val connectionRepository = ConnectionRepositoryImpl(webSocketDataSource)
-    val viewModelFactory = ViewModelFactory(connectionRepository)
 
-    val homeViewModel: HomeViewModel by viewModels { viewModelFactory }
-    val trackpadViewModel: TrackpadViewModel by viewModels { viewModelFactory }
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val trackpadViewModel: TrackpadViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

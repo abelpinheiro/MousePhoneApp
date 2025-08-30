@@ -2,6 +2,7 @@ package com.abelpinheiro.mousephoneapp.ui.trackpad
 
 import androidx.lifecycle.ViewModel
 import com.abelpinheiro.mousephoneapp.data.ConnectionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,7 @@ data class TrackpadUiState(
     val isGyroEnabled: Boolean = false
 )
 
+@HiltViewModel
 class TrackpadViewModel(
     private val connectionRepository: ConnectionRepository
 ): ViewModel() {
