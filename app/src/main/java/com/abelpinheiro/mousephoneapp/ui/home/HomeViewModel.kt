@@ -61,9 +61,10 @@ class HomeViewModel @Inject constructor(
      * Updates the IP address input in the UI state and validates the input.
      */
     fun onIpAddressChanged(ip: String){
-        val filteredIp = ip.filter { it.isDigit() }.take(12)
-        _uiState.update { it.copy(ipAddress = filteredIp) }
-        validateInputs()
+        if(ip.length <= 15) {
+            _uiState.update { it.copy(ipAddress = ip) }
+            validateInputs()
+        }
     }
 
     /**

@@ -120,8 +120,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                 onValueChange = onIpAddressChange,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                visualTransformation = IpAddressVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 isError = uiState.ipAddressError != null,
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -250,35 +249,3 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
             }
         }
     }
-
-// VisualTransformation for IP formatting
-class IpAddressVisualTransformation : VisualTransformation {
-    override fun filter(text: AnnotatedString): TransformedText {
-        val trimmed = if (text.text.length >= 12) text.text.substring(0..11) else text.text
-        var out = ""
-        for (i in trimmed.indices) {
-            out += trimmed[i]
-            if (i % 3 == 2 && i < 11) out += "."
-        }
-
-        val offsetMapping = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                if (offset <= 2) return offset
-                if (offset <= 5) return offset + 1
-                if (offset <= 8) return offset + 2
-                if (offset <= 11) return offset + 3
-                return 15
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                if (offset <= 3) return offset
-                if (offset <= 7) return offset - 1
-                if (offset <= 11) return offset - 2
-                if (offset <= 15) return offset - 3
-                return 12
-            }
-        }
-
-        return TransformedText(AnnotatedString(out), offsetMapping)
-    }
-}
