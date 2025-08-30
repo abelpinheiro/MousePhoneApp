@@ -36,7 +36,7 @@ class ConnectionRepositoryImpl @Inject constructor(
 ): ConnectionRepository{
     override val connectionState: Flow<ConnectionState> = webSocketDataSource.connectionState
     override fun connect(ip: String, port: String) {
-        webSocketDataSource.connect("ws://$ip:$port")
+        webSocketDataSource.connect("ws://$ip:$port/ws")
     }
 
     override fun sendMessage(message: String) {
