@@ -31,13 +31,13 @@ class TrackpadViewModel @Inject constructor(
     }
 
     fun onLeftClick(){
-        //TODO Send Left click event
-        println("Left Click")
+        val json = """{"type": "click", "button": "left"}"""
+        connectionRepository.sendMessage(json)
     }
 
     fun onRightClick(){
-        //TODO Send right click event
-        println("Right Click")
+        val json = """{"type": "click", "button": "right"}"""
+        connectionRepository.sendMessage(json)
     }
 
     fun onDisconnectButtonClicked() {

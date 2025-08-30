@@ -141,7 +141,50 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
 
 @Composable
 fun MouseButtons(onLeftClick: () -> Unit, onRightClick: () -> Unit, disabled: Boolean) {
-    Text("Mouse buttons - not implemented yet")
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Button(
+            onClick = onLeftClick,
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF3A3A4A),
+                contentColor = Color.White
+            )
+        ){
+            Icon(
+                Icons.AutoMirrored.Filled.Send,
+                contentDescription = "Left Click",
+                modifier = Modifier.rotate(-45f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Left")
+        }
+
+        Button(
+            onClick = onRightClick,
+            modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF3A3A4A),
+                contentColor = Color.White
+            )
+        ){
+            Icon(
+                Icons.AutoMirrored.Filled.Send,
+                contentDescription = "Right Click",
+                modifier = Modifier.rotate(45f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Right")
+        }
+    }
 }
 
 @Composable
