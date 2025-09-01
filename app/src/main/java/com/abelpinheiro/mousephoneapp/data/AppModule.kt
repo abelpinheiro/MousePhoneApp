@@ -1,9 +1,10 @@
 package com.abelpinheiro.mousephoneapp.data
 
-import dagger.Binds
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,4 +21,10 @@ object AppModule {
     fun provideConnectionRepository(
         dataSource: WebSocketDataSource
     ): ConnectionRepository = ConnectionRepositoryImpl(dataSource)
+
+    @Provides
+    @Singleton
+    fun provideGyroscopeManager(@ApplicationContext context: Context) : GyroscopeManager{
+        return GyroscopeManager(context)
+    }
 }
