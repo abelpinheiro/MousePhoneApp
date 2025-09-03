@@ -44,8 +44,8 @@ fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewMode
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
@@ -90,13 +90,13 @@ fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewMode
                     text = "Connect to Computer",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Transform your phone into a wireless\nmouse and trackpad",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(onClick = { homeViewModel.onConnectClicked() },
@@ -117,7 +117,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadViewMode
                             ),
                         contentAlignment = Alignment.Center
                     ){
-                        Text("Connect Now", fontSize = 16.sp, color = Color.White)
+                        Text("Connect Now", fontSize = 16.sp, color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }

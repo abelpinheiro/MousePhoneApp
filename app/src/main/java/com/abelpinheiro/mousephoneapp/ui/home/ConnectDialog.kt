@@ -15,12 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +31,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E2D))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 // Header
@@ -45,17 +41,17 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically){
-                        Icon(Icons.Default.Wifi, contentDescription = null, tint = Color.White)
+                        Icon(Icons.Default.Wifi, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Connect to Computer", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text("Connect to Computer", color = MaterialTheme.colorScheme.onSurface, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     }
                     IconButton(onClick = onDismiss){
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
                     }
                 }
                 Text(
                     "Enter your computer's IP address and port to establish a connection.",
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
                 )
@@ -63,22 +59,23 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                 // Tabs
                 TabRow(
                     selectedTabIndex = selectedTab,
-                    containerColor = Color(0xFF2A2A3A),
-                    contentColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                     indicator = {},
                     divider = {}
                 ){
+                    val selectedColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                     Tab(
                         selected = selectedTab == 0,
                         onClick = { selectedTab = 0 },
-                        modifier = Modifier.padding(4.dp).background(if (selectedTab == 0) Color(0xFF3A3A4A) else Color.Transparent, RoundedCornerShape(8.dp))
+                        modifier = Modifier.padding(4.dp).background(if (selectedTab == 0) selectedColor else Color.Transparent, RoundedCornerShape(8.dp))
                     ) {
                         Text("Manual Entry", modifier = Modifier.padding(vertical = 12.dp))
                     }
                     Tab(
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
-                        modifier = Modifier.padding(4.dp).background(if (selectedTab == 1) Color(0xFF3A3A4A) else Color.Transparent, RoundedCornerShape(8.dp))
+                        modifier = Modifier.padding(4.dp).background(if (selectedTab == 1) selectedColor else Color.Transparent, RoundedCornerShape(8.dp))
                     ) {
                         Text("QR Scan", modifier = Modifier.padding(vertical = 12.dp))
                     }
@@ -114,7 +111,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
         onConnect: () -> Unit
     ){
         Column{
-            Text("IP Address", color = Color.Gray)
+            Text("IP Address", color = MaterialTheme.colorScheme.onSurface)
             OutlinedTextField(
                 value = uiState.ipAddress,
                 onValueChange = onIpAddressChange,
@@ -125,9 +122,9 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     errorBorderColor = MaterialTheme.colorScheme.error
                 )
             )
@@ -142,7 +139,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text("Port", color = Color.Gray)
+            Text("Port", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             OutlinedTextField(
                 value = uiState.port,
                 onValueChange = onPortChange,
@@ -153,9 +150,9 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     errorBorderColor = MaterialTheme.colorScheme.error
                 )
             )
@@ -194,7 +191,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                             ).padding(horizontal = 24.dp, vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ){
-                        Text("Connect", color = Color.White)
+                        Text("Connect", color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             }
@@ -211,11 +208,11 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                 modifier = Modifier.size(80.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Scan QR Code", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Scan QR Code", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Text(
                 "Scan the QR code displayed on your computer to connect automatically",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -239,7 +236,7 @@ fun ConnectDialog(viewModel: HomeViewModel, onDismiss: () -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically){
                         Icon(Icons.Default.QrCodeScanner, contentDescription = null, tint = Color.White)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Start QR Scan", color = Color.White, fontSize = 16.sp)
+                        Text("Start QR Scan", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
                     }
                 }
             }

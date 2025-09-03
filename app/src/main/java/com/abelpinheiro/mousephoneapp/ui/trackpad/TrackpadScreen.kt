@@ -77,8 +77,8 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -88,7 +88,8 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
         ) {
@@ -210,7 +211,7 @@ fun TrackpadArea(modifier: Modifier, onMouseMove:  (deltaX: Float, deltaY: Float
         contentAlignment = Alignment.Center
     ){
         if (disabled){
-            Text("Trackpad disabled (Gyro is ON)", color = Color.White.copy(alpha = 0.7f))
+            Text("Trackpad disabled (Gyro is ON)", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
         } else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -219,7 +220,7 @@ fun TrackpadArea(modifier: Modifier, onMouseMove:  (deltaX: Float, deltaY: Float
                 Icon(
                     imageVector = Icons.Default.Mouse,
                     contentDescription = "Mouse Icon",
-                    tint = Color.Gray
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
                 Text(
                     "Touch to move cursor",
@@ -264,13 +265,13 @@ fun GyroToggle(enabled: Boolean, onChange: (Boolean) -> Unit, disabled: Boolean 
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(if (enabled) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.DarkGray),
+                        .background(if (enabled) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ){
                     Icon(
                         Icons.Default.CompassCalibration,
                         contentDescription = "Gyroscope",
-                        tint = if (enabled) MaterialTheme.colorScheme.primary else Color.DarkGray,
+                        tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                         modifier = if (enabled) Modifier.rotate(rotation) else Modifier
                     )
                 }
@@ -278,11 +279,11 @@ fun GyroToggle(enabled: Boolean, onChange: (Boolean) -> Unit, disabled: Boolean 
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column{
-                    Text("Gyroscope Control", fontWeight = FontWeight.Medium, color = Color.White)
+                    Text("Gyroscope Control", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
                     Text(
                         if (enabled) "Move phone to control cursor" else "Use trackpad for cursor control",
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
             }
