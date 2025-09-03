@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +29,12 @@ import com.abelpinheiro.mousephoneapp.ui.home.HomeUIState
 @Composable
 fun ConnectionStatusCard(uiState: HomeUIState){
     val isConnected = uiState.isConnected
-    val cardColor = if (isConnected) Color(0xFF192E24) else Color(0xFF2A2A3A)
+    val cardColor = if (isConnected) Color(0xFF192E24) else MaterialTheme.colorScheme.surface
     val icon = if (isConnected) Icons.Default.Wifi else Icons.Default.WifiOff
-    val iconColor = if (isConnected) Color(0xFF2F845C) else Color.Gray
+    val iconColor = if (isConnected) Color(0xFF2F845C) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     val text = if (isConnected) "Connected" else "Disconnected"
-    val textColor = if (isConnected) Color(0xFF2F845C) else Color.Gray
+    val textColor = if (isConnected) Color(0xFF2F845C) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    val secondaryTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
 
     Card(modifier = Modifier
         .fillMaxWidth()
@@ -57,14 +59,14 @@ fun ConnectionStatusCard(uiState: HomeUIState){
                 Column {
                     Text(text, color = textColor, fontWeight = FontWeight.Bold)
                     if (isConnected) {
-                        Text("Desktop Computer", color = Color.Gray, fontSize = 12.sp)
+                        Text("Desktop Computer", color = secondaryTextColor, fontSize = 12.sp)
                     }
                 }
             }
             Icon(
                 Icons.Default.PhoneAndroid,
                 contentDescription = "Phone",
-                tint = Color.Gray
+                tint = secondaryTextColor
             )
         }
     }

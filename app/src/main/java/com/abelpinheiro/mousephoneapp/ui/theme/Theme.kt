@@ -16,8 +16,6 @@ private val DarkColorScheme = darkColorScheme(
     background = Color(0xFF12121F),
     surface = Color(0xFF1E1E2D),
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
     onBackground = Color.White,
     onSurface = Color.White,
 )
@@ -39,7 +37,8 @@ fun MousePhoneAppTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }

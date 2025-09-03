@@ -104,7 +104,7 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("Trackpad", color = Color.Gray)
+            Text("Trackpad", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             Spacer(modifier = Modifier.height(8.dp))
 
             TrackpadArea(
@@ -115,7 +115,7 @@ fun TrackpadScreen(homeViewModel: HomeViewModel, trackpadViewModel: TrackpadView
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("Mouse Buttons", color = Color.Gray)
+            Text("Mouse Buttons", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             Spacer(modifier = Modifier.height(8.dp))
 
             MouseButtons(
@@ -156,8 +156,8 @@ fun MouseButtons(onLeftClick: () -> Unit, onRightClick: () -> Unit, disabled: Bo
                 .height(50.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3A3A4A),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         ){
             Icon(
@@ -176,8 +176,8 @@ fun MouseButtons(onLeftClick: () -> Unit, onRightClick: () -> Unit, disabled: Bo
                 .height(50.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3A3A4A),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         ){
             Icon(
@@ -193,7 +193,7 @@ fun MouseButtons(onLeftClick: () -> Unit, onRightClick: () -> Unit, disabled: Bo
 
 @Composable
 fun TrackpadArea(modifier: Modifier, onMouseMove:  (deltaX: Float, deltaY: Float) -> Unit, disabled: Boolean) {
-    val trackpadColor = if (disabled) Color.DarkGray.copy(alpha = 0.6f) else Color(0xFF2A2A3A)
+    val trackpadColor = if (disabled) MaterialTheme.colorScheme.surface.copy(alpha = 0.4f) else MaterialTheme.colorScheme.surfaceVariant
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -223,12 +223,12 @@ fun TrackpadArea(modifier: Modifier, onMouseMove:  (deltaX: Float, deltaY: Float
                 )
                 Text(
                     "Touch to move cursor",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     "Drag to control mouse movement",
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
         }
