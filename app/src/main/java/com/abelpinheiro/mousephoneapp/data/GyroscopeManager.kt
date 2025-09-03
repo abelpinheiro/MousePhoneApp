@@ -19,13 +19,13 @@ class GyroscopeManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SensorEventListener {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val gyroscopeSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+    private val rotationSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
-    private val _gyroscopeData = MutableStateFlow(GyroscopeData(0f, 0f, 0f))
-    val gyroscopeData: StateFlow<GyroscopeData> = _gyroscopeData.asStateFlow()
+    private val _orientationAngles = MutableStateFlow(FloatArray(3))
+    val orientationAngles: StateFlow<FloatArray> = _orientationAngles.asStateFlow()
 
     fun startListening() {
-        sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_GAME)
+        sensorManager.registerListener(this, rotationSensor, SensorManager.SENSOR_DELAY_GAME)
     }
 
     fun stopListening() {
@@ -36,12 +36,14 @@ class GyroscopeManager @Inject constructor(
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_GYROSCOPE) {
-            _gyroscopeData.value = GyroscopeData(
-                x = event.values[0],
-                y = event.values[1],
-                z = event.values[2]
-            )
+        if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
+            val rotationMatrix = FloatArray(9)
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+
+            val orientationAngles = FloatArray(3)
+            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+            _orientationAngles.value = orientationAngles
         }
     }
 

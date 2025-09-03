@@ -1,5 +1,6 @@
 package com.abelpinheiro.mousephoneapp.ui.trackpad
 
+import android.R.attr.data
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abelpinheiro.mousephoneapp.data.ConnectionRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * UI state for the trackpad screen
@@ -32,6 +34,7 @@ class TrackpadViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TrackpadUiState())
     val uiState: StateFlow<TrackpadUiState> = _uiState.asStateFlow()
     private var gyroscopeJob: Job? = null
+    private var initialOrientation: FloatArray? = null
 
     /**
      * Toggle gyroscope sensor on/off
@@ -57,18 +60,30 @@ class TrackpadViewModel @Inject constructor(
      * Start listening to gyroscope data and map it to trackpad movement
      */
     private fun startGyroscope() {
+        initialOrientation = null
         gyroscopeManager.startListening()
         gyroscopeJob = viewModelScope.launch {
-            gyroscopeManager.gyroscopeData.collectLatest { data ->
-                // Map gyroscope data to trackpad movement
-                val sensitivity = 15f
-                val dx = -data.x * sensitivity
-                val dy = -data.y * sensitivity
+            gyroscopeManager.orientationAngles.collectLatest { currentAngles ->
+                // If we don't have initial orientation, set it
+                if (initialOrientation == null) {
+                    initialOrientation = currentAngles
+                }
 
-                // Only send if the movement is significant
-                if (dx.toRawBits() != 0 || dy.toRawBits() != 0) {
-                    val json = """{"type": "move", "dx": $dx, "dy": $dy}"""
-                    connectionRepository.sendMessage(json)
+                val initial = initialOrientation ?: return@collectLatest
+
+                // Calculate the difference between the current and initial orientation
+                val roll = currentAngles[2] - initial[2]
+                val pitch = currentAngles[1] - initial[1]
+
+                // Map the gyroscope data to trackpad movement
+                val sensitivity = 250f
+                val dx = roll * sensitivity
+                val dy = pitch * sensitivity
+
+                // Send the trackpad movement to the server
+                if (abs(dx) > 0.1 || abs(dy) > 0.1) {
+                    val moveJson = """{"type": "move", "dx": $dx, "dy": $dy}"""
+                    connectionRepository.sendMessage(moveJson)
                 }
             }
         }
